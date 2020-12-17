@@ -5,12 +5,14 @@ import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-public class PersonalAssistant {
+public class PersonalAssistantBotHandler {
+
+    private static final String PROPERTY_PATH = "/etc/personal_assistant/BotSettings.properties";
+
 
     public static void main(String[] args) {
-        BotProperties.initProperties();
-        initProxyServer();
-        PersonalAssistantBotHandler bot = new PersonalAssistantBotHandler();
+        BotProperties properties = new BotProperties(PROPERTY_PATH);
+        PersonalAssistantBot bot = new PersonalAssistantBot(properties);
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(bot);
@@ -19,22 +21,22 @@ public class PersonalAssistant {
         }
     }
 
-    /**
-     * Initialize proxyServer, if need
-     * @return void
-     */
-    public static void initProxyServer(){
-        if("true".equalsIgnoreCase(BotProperties.getProperty(BotProperties.key.USE_PROXY))){
-            System.setProperty("http.proxyHost",BotProperties.getProperty(BotProperties.key.PROXY_SERVER));
-            System.setProperty("http.proxyPort", BotProperties.getProperty(BotProperties.key.PROXY_PORT));
-        }
-    }
-
 }
 
 
-class PersonalAssistantBotHandler extends TelegramLongPollingBot{
+class PersonalAssistantBot extends TelegramLongPollingBot{
 
+    BotProperties properties;
+    PersonalAssistantBot(BotProperties properties){
+        this.properties = properties;
+        /*Initialize proxyServer, if need*/
+        if("true".equalsIgnoreCase(properties.getProperty(BotProperties.key.USE_PROXY))){
+            System.setProperty("http.proxyHost",properties.getProperty(BotProperties.key.PROXY_SERVER));
+            System.setProperty("http.proxyPort", properties.getProperty(BotProperties.key.PROXY_PORT));
+        }
+
+
+    }
 
     public void onUpdateReceived(Update update) {
         SendMessage message = new SendMessage();
@@ -55,4 +57,6 @@ class PersonalAssistantBotHandler extends TelegramLongPollingBot{
     public String getBotToken() {
         return BotProperties.getProperty(BotProperties.key.BOT_TOKEN);
     }
+
+
 }
