@@ -1,0 +1,7 @@
+BotRequest.Start = \\start
+BotRequest.Help = \\help
+BotRequest.Info = \\info
+
+BotMessage.Hello = Hello, %s
+BotMessage.Help = \\help - request this menu\n\\info - get info about this bot\n\\tasks - start task managment dialog
+BotMessage.Info = bot name - %s\nbot author - %s\nrepository - %s\nbot version - %s

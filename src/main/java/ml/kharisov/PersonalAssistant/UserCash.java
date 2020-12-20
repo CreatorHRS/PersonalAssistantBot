@@ -1,38 +1,35 @@
+package ml.kharisov.PersonalAssistant;
+
 import java.util.*;
 
-public class BotCash
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class UserCash
 {
 	private ArrayList<User> cash;
+	//TODO:make Autowired
 	private long limit;
-	private long usersInCash = 0;
+	private long objectsInCash = 0;
 	Stack<User> stack;
 
 	/**
-	 * Itit a UserCash object with limit
+	 * Init a BotCash object
 	 *
 	 * @since 2020.11.18
 	 */
-	public BotCash(long limit)
+	public UserCash()
 	{
 		cash = new ArrayList<>();
-		this.limit = limit;
 	}
-
-	/**
-	 * Itit a UserCash object
-	 *
-	 * @since 2020.11.18
-	 */
-	public BotCash()
-	{
-		cash = new ArrayList<>();
-		this.limit = 1024;
-	}
-
+	
 	public void expandLimit(long expandOn){
 		limit = limit + expandOn;
 	}
-
+	
 	public long getLimit(){
 		return this.limit;
 	}
@@ -43,7 +40,7 @@ public class BotCash
 	 * @param userId
 	 * @return user object, if user not in cash return null
 	 */
-	public User getUser(String userId)
+	public User getObject(String userId)
 	{
 		User user = null;
 		for(int userIndex = 0; userIndex < cash.size(); userIndex++)
@@ -64,16 +61,16 @@ public class BotCash
 	/**
 	 * Get the index of user
 	 *
-	 * @param user
-	 * @return index of user
+	 * @param object
+	 * @return index of bot object in cash
 	 */
 	public int getUserIndex(User user)
 	{
-		for(int userIndex = 0; userIndex < cash.size(); userIndex++)
+		for(int objectIndex = 0; objectIndex < cash.size(); objectIndex++)
 		{
-			if(cash.get(userIndex).getId().equals(user.getId()))
+			if(cash.get(objectIndex).getId().equals(user.getId()))
 			{
-				return userIndex;
+				return objectIndex;
 			}
 		}
 		return -1;
@@ -83,7 +80,7 @@ public class BotCash
 	 * Put the user to the cash,
 	 * if user already in cash put him in the top
 	 *
-	 * @param user
+	 * @param object
 	 */
 	public void putUser(User user)
 	{
@@ -93,10 +90,9 @@ public class BotCash
 			cash.remove(indexOfUser);
 		}
 
-		String userId = user.getId();
 		cash.add(user);
-		usersInCash++;
-		if(usersInCash > limit)
+		objectsInCash++;
+		if(objectsInCash > limit)
 		{
 			cash.remove(0);
 		}
